@@ -1,4 +1,5 @@
 const express = require('express');
+const crypto = require('crypto');
 const { readTalkerData, readTalkerById } = require('./utils/fsUtils');
 
 const app = express();
@@ -22,6 +23,10 @@ app.get('/talker/:id', async (req, res) => {
   const talker = await readTalkerById(Number(id));
   if (!talker) return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
   return res.status(200).json(talker);
+});
+
+app.post('/login', (req, res) => {
+  res.status(200).json({ token: crypto.randomBytes(8).toString('hex') });
 });
 
 app.listen(PORT, () => {
