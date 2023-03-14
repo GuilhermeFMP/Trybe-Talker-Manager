@@ -25,7 +25,27 @@ async function readTalkerById(id) {
   }
 }
 
+async function writeTalker(talker) {
+  try {
+    const oldTalkers = await readTalkerData();
+    const newTalkerOBJ = {
+      id: oldTalkers[oldTalkers.length - 1].id + 1,
+      ...talker,
+    };
+    const allTalkers = JSON.stringify([
+      ...oldTalkers,
+      newTalkerOBJ,
+    ], null, 2);
+
+    await fs.writeFile(path.resolve(__dirname, TALKER_DATA_PATH), allTalkers);
+    return newTalkerOBJ;
+  } catch (error) {
+    console.error(`Erro na escrrita do arquivo: ${error}`);
+  }
+}
+
 module.exports = {
   readTalkerData,
   readTalkerById,
+  writeTalker,
 };
