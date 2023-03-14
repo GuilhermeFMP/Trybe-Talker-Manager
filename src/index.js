@@ -20,6 +20,13 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
+app.get('/talker/search', validateAuth, async (req, res) => {
+  const { q } = req.query;
+  const talkers = await readTalkerData();
+  const arr = talkers.filter((talk) => talk.name.includes(q));
+  return res.status(200).json(arr);
+});
+
 app.get('/talker', async (req, res) => {
   const talkers = await readTalkerData();
   return res.status(200).json(talkers);
