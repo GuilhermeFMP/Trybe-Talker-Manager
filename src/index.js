@@ -1,6 +1,7 @@
 const express = require('express');
 const crypto = require('crypto');
-const { readTalkerData, readTalkerById, writeTalker, updateTalkers } = require('./utils/fsUtils');
+const { readTalkerData, readTalkerById, writeTalker,
+    updateTalkers, deleteTalker } = require('./utils/fsUtils');
 const validateEmail = require('./middlewares/validateEmail');
 const validatePassword = require('./middlewares/validatePassword');
 const validateAuth = require('./middlewares/validateAuth');
@@ -51,6 +52,12 @@ validateAge, validateTalk, validateWatched, validateRate, async (req, res) => {
     return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
   }
   return res.status(200).json(updatedTalkers);
+});
+
+app.delete('/talker/:id', validateAuth, async (req, res) => {
+  const { id } = req.params;
+  await deleteTalker(Number(id));
+  return res.status(204).end();
 });
 
 app.listen(PORT, () => {
