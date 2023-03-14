@@ -14,6 +14,18 @@ async function readTalkerData() {
   }
 }
 
+async function readTalkerById(id) {
+  try {
+    const data = await fs.readFile(path.resolve(__dirname, TALKER_DATA_PATH));
+    const talker = JSON.parse(data);
+
+    return talker.find((talk) => talk.id === id);
+  } catch (error) {
+    console.error(`Erro na leitura do arquivo: ${error}`);
+  }
+}
+
 module.exports = {
   readTalkerData,
+  readTalkerById,
 };
