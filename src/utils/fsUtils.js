@@ -44,8 +44,29 @@ async function writeTalker(talker) {
   }
 }
 
+async function updateTalkers(id, updatedTalkerData) {
+  const { name, age, talk } = updatedTalkerData;
+  const oldTalkers = await readTalkerData();
+  const updateTalker = { name, age, id, talk };
+  if (!oldTalkers.find((talks) => talks.id === id)) {
+    return [];
+  }
+  const updated = oldTalkers.reduce((talkersList, currentTalker) => {
+    if (currentTalker.id === updateTalker.id) return [...talkersList, updateTalker];
+    return [...talkersList, currentTalker];
+  }, []);
+  const updateData = JSON.stringify(updated, null, 2);
+  try {
+    await fs.writeFile(path.resolve(__dirname, TALKER_DATA_PATH), updateData);
+    return updateTalker;
+  } catch (error) {
+    console.error(`Erro na escrita do arquivo: ${error}`);
+  }
+}
+
 module.exports = {
   readTalkerData,
   readTalkerById,
   writeTalker,
+  updateTalkers,
 };
