@@ -75,10 +75,29 @@ async function deleteTalker(id) {
   }
 }
 
+async function filterTalker(terms) {
+  let talkers = await readTalkerData();
+  const filters = Object.keys(terms);
+  filters.forEach((filter) => {
+    if (filter === 'q') {
+      talkers = talkers.filter((talk) => talk.name.toLowerCase().includes(terms.q.toLowerCase()));
+    }
+    if (filter === 'date') {
+      talkers = talkers.filter((talk) => talk.talk.watchedAt.toLowerCase()
+        .includes(terms.date.toLowerCase()));
+    }
+    if (filter === 'rate') {
+      talkers = talkers.filter((talk) => talk.talk.rate === Number(terms.rate));
+    }
+  });
+  return talkers;
+}
+
 module.exports = {
   readTalkerData,
   readTalkerById,
   writeTalker,
   updateTalkers,
   deleteTalker,
+  filterTalker,
 };

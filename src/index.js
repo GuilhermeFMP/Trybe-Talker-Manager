@@ -1,13 +1,15 @@
 const express = require('express');
 const crypto = require('crypto');
 const { readTalkerData, readTalkerById, writeTalker,
-    updateTalkers, deleteTalker } = require('./utils/fsUtils');
+    updateTalkers, deleteTalker, filterTalker } = require('./utils/fsUtils');
 const validateEmail = require('./middlewares/validateEmail');
 const validatePassword = require('./middlewares/validatePassword');
 const validateAuth = require('./middlewares/validateAuth');
 const validateName = require('./middlewares/validateName');
 const validateAge = require('./middlewares/validateAge');
 const { validateTalk, validateWatched, validateRate } = require('./middlewares/validateTalk');
+const validateQueryRate = require('./middlewares/validateQueryRate');
+const validateQueryDate = require('./middlewares/validateQueryDate');
 
 const app = express();
 app.use(express.json());
@@ -20,11 +22,10 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
-app.get('/talker/search', validateAuth, async (req, res) => {
-  const { q } = req.query;
-  const talkers = await readTalkerData();
-  const arr = talkers.filter((talk) => talk.name.includes(q));
-  return res.status(200).json(arr);
+app.get('/talker/search', validateAuth, validateQueryRate, validateQueryDate, async (req, res) => {
+  const terms = req.query;
+  const talker = await filterTalker(terms);
+  return res.status(200).json(talker);
 });
 
 app.get('/talker', async (req, res) => {
