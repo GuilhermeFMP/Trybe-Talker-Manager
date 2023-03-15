@@ -93,6 +93,24 @@ async function filterTalker(terms) {
   return talkers;
 }
 
+async function changeRate(id, rate) {
+  console.log(rate);
+  const oldTalkers = await readTalkerData();
+  const talker = oldTalkers.find((talk) => talk.id === id);
+  talker.talk.rate = rate;
+  console.log(talker);
+  const updated = oldTalkers.reduce((talkersList, currentTalker) => {
+    if (currentTalker.id === talker.id) return [...talkersList, talker];
+    return [...talkersList, currentTalker];
+  }, []);
+  const updateData = JSON.stringify(updated, null, 2);
+  try {
+    await fs.writeFile(path.resolve(__dirname, TALKER_DATA_PATH), updateData);
+  } catch (error) {
+    console.error(`Erro na escrita do arquivo: ${error}`);
+  }
+}
+
 module.exports = {
   readTalkerData,
   readTalkerById,
@@ -100,4 +118,5 @@ module.exports = {
   updateTalkers,
   deleteTalker,
   filterTalker,
+  changeRate,
 };

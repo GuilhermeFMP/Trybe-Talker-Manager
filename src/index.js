@@ -1,13 +1,14 @@
 const express = require('express');
 const crypto = require('crypto');
 const { readTalkerData, readTalkerById, writeTalker,
-    updateTalkers, deleteTalker, filterTalker } = require('./utils/fsUtils');
+    updateTalkers, deleteTalker, filterTalker, changeRate } = require('./utils/fsUtils');
 const validateEmail = require('./middlewares/validateEmail');
 const validatePassword = require('./middlewares/validatePassword');
 const validateAuth = require('./middlewares/validateAuth');
 const validateName = require('./middlewares/validateName');
 const validateAge = require('./middlewares/validateAge');
-const { validateTalk, validateWatched, validateRate } = require('./middlewares/validateTalk');
+const { validateTalk, validateWatched, 
+  validateRate, validateIdWithRate } = require('./middlewares/validateTalk');
 const validateQueryRate = require('./middlewares/validateQueryRate');
 const validateQueryDate = require('./middlewares/validateQueryDate');
 
@@ -65,6 +66,13 @@ validateAge, validateTalk, validateWatched, validateRate, async (req, res) => {
 app.delete('/talker/:id', validateAuth, async (req, res) => {
   const { id } = req.params;
   await deleteTalker(Number(id));
+  return res.status(204).end();
+});
+
+app.patch('/talker/rate/:id', validateAuth, validateIdWithRate, async (req, res) => {
+  const { id } = req.params;
+  const rate = req.body;
+  await changeRate(Number(id), Number(rate.rate));
   return res.status(204).end();
 });
 
