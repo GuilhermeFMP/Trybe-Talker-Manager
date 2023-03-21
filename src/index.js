@@ -11,6 +11,7 @@ const { validateTalk, validateWatched,
   validateRate, validateIdWithRate } = require('./middlewares/validateTalk');
 const validateQueryRate = require('./middlewares/validateQueryRate');
 const validateQueryDate = require('./middlewares/validateQueryDate');
+const connection = require('./db/connection');
 
 const app = express();
 app.use(express.json());
@@ -21,6 +22,25 @@ const PORT = process.env.PORT || '3001';
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
+});
+
+app.get('/talker/db', async (req, res) => {
+  const [result] = await connection.execute(`
+  SELECT * FROM TalkerDB.talkers`);
+  const objects = result.map((talk) => ({
+    name: talk.name,
+    age: talk.age,
+    id: talk.id,
+    talk: {
+      watchedAt: talk.talk_watched_at,
+      rate: talk.talk_rate,
+    },
+  }));
+  if (!result) {
+    return res.status(200).json([]);
+  }
+
+  return res.status(200).json(objects);
 });
 
 app.get('/talker/search', validateAuth, validateQueryRate, validateQueryDate, async (req, res) => {
