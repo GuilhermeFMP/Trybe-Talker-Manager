@@ -19,7 +19,7 @@ Aprendi nesse projeto a criar uma API Restful com o Express com testes de integr
 Instalação com NPM
 
 ```bash
-  git clone git@github.com:GuilhermeFMP/Talker-Manager.git
+  git clone git@github.com:GuilhermeFMP/Trybe-Talker-Manager.git
   cd Talker-Manager
   npm install
 ```
