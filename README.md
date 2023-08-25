@@ -20,7 +20,7 @@ Instalação com NPM
 
 ```bash
   git clone git@github.com:GuilhermeFMP/Trybe-Talker-Manager.git
-  cd Talker-Manager
+  cd Trybe-Talker-Manager
   npm install
 ```
     
